@@ -46,6 +46,7 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 ## Link to repository on GitHub
 
+https://github.com/justkayla/12-employee-tracker
 
 
 ## Screenshot
