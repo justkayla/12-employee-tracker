@@ -1,6 +1,6 @@
 // Base code provided by class instructor
 
-const { prompt } = require('inquirer');
+const { prompt, default: inquirer } = require('inquirer');
 const fs = require('fs');
 const logo = require("asciiart-logo");
 require("console.table");
@@ -9,6 +9,7 @@ require("console.table");
 // This file leads to a class we've created to contain all our database queries
 // Does this need to be exported out from `./db/index`?
 const db = require("./db");
+const { allowedNodeEnvironmentFlags } = require('process');
 
 
 // Use this function to display the ascii art logo and to begin the main prompts
@@ -29,37 +30,87 @@ function loadMainPrompts() {
       message: "What would you like to do?",
       choices: [
         {
-          name: "View All Employees",
+          name: "View all Departments",
+          value: "VIEW_DEPARTMENTS"
+        },
+        {
+          name: "View all Roles",
+          value: "VIEW_ROLES"
+        },
+        {
+          name: "View all Employees",
           value: "VIEW_EMPLOYEES"
         },
-
-        // add more options here
+        {
+          name: "Add a Department",
+          value: "ADD_DEPARTMENT"
+        },
+        {
+          name: "Add a Role",
+          value: "ADD_ROLE",
+        },
+        {
+          name: "Add an Employee",
+          value: "ADD_EMPLOYEE"
+        },
+        {
+          name: "Update an Employee Role",
+          value: "UPDATE_EMPLOYEE"
+        } 
       ]
     }
   ]).then(res => {
     let choice = res.choice;
     // Call the appropriate function depending on what the user chose
-    
     switch (choice) {
+      case "VIEW_DEPARTMENTS":
+        viewDepartments();
+        break;      
+      case "VIEW_ROLES":
+        viewRoles();
+        break;
       case "VIEW_EMPLOYEES":
         viewEmployees();
         break;
-      
-        // add the other case statements here
+      case "ADD_DEPARTMENT":
+        addDepartment();
+        break;      
+      case "ADD_ROLE":
+        addRole();
+        break;      
+      case "ADD_EMPLOYEE":
+        addEmployee();
+        break;
+      /*
+      case "UPDATE_EMPLOYEE":
+        updateEmployee();
+        break;
+      */      
     }
   }
 )}
-
-
-
-
 /* ======= Controllers ============================================================ */
-
-// Here is a function which handles the first prompt option:  View all employees
+function viewDepartments() {
+  // Call the method in the db file for finding all departments
+  // Get the result back, and then display the result
+  db.findAllDepartments()
+    .then(([rows]) => {
+      let departments = rows;
+      console.log("\n");
+      console.table(departments);
+    })
+    .then(() => loadMainPrompts());
+}
+function viewRoles() {
+  db.findAllRoles()
+    .then(([rows]) => {
+      let roles = rows;
+      console.log("\n");
+      console.table(roles);
+    })
+  .then(() => loadMainPrompts());  
+}
 function viewEmployees() {
-
-  // Here we call the method in the db file for finding all employees.
-  // we get the result back, and then display the result 
   db.findAllEmployees()
     .then(([rows]) => {
       let employees = rows;
@@ -68,9 +119,39 @@ function viewEmployees() {
     })
     .then(() => loadMainPrompts());
 }
-
-
-
+function addDepartment() {
+  prompt([
+    {
+      type: "input",
+      message: "What department would you like to add?",
+      name: "newDept"
+    }
+  ])
+}
+function addRole() {
+  prompt([
+    {
+      type: "input",
+      message: "What role would you like to add?",
+      name: "newRole"
+    }
+  ])
+}
+function addEmployee() {
+  prompt([
+    {
+      type: "input",
+      message: "What employee would you like to add?",
+      name: "newEmp"
+    }
+  ])
+}
+/*
+function updateEmployee() {
+  // Which employee would you like to update? [choices]
+  // How would you like to update this employee? [choices]
+}
+*/
 /* ======= END Controllers ============================================================ */
 
 

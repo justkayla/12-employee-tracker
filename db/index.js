@@ -1,11 +1,24 @@
 // Base code provided by class instructor
 
-const connection = require("./connection");
+const connection = require("../config/connection");
 
 class DB {
   // Keeping a reference to the connection on the class in case we need it later
   constructor(connection) {
     this.connection = connection;   // here we reach out to the db so we can do a query
+  }
+
+
+  findAllDepartments() {
+    return this.connection.promise().query(
+      "SELECT * FROM department;"
+    );
+  }
+
+  findAllRoles() {
+    return this.connection.promise().query(
+      "SELECT * FROM role;"
+    );
   }
 
   // Find all employees
@@ -22,6 +35,8 @@ class DB {
   // Add more class methods below for all the database operations needed.
   // Sometimes you may need to pass an id value into a method so it knows 
   //   how to find the correct record.
+
+
 
 
   
