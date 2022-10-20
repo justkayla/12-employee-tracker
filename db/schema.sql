@@ -32,5 +32,5 @@ CREATE TABLE employee (
   manager_id INT UNSIGNED,
   -- constraint goes here --
     INDEX man_ind (manager_id),
-    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL  
+    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
 );

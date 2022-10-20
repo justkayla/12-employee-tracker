@@ -3,32 +3,23 @@
 const connection = require("../config/connection");
 
 class DB {
-  // Keeping a reference to the connection on the class in case we need it later
+  // Reference to the connection on the class
   constructor(connection) {
-    this.connection = connection;   // here we reach out to the db so we can do a query
+    this.connection = connection;   // Connect to db to perform query
   }
-
-
   findAllDepartments() {
     return this.connection.promise().query(
       "SELECT * FROM department;"
     );
-  }
-
+  }  
   findAllRoles() {
     return this.connection.promise().query(
       "SELECT * FROM role;"
     );
-  }
-
-  // Find all employees
-  // THIS IS NOT THE FINAL QUERY. YOU WILL NEED TO MODIFY THIS QUERY SO THAT YOU JOIN 
-  // THE EMPLOYEES WITH THEIR ROLES, SALARIES, DEPARTMENTS, AND MANAGERS
-  // HINT: A TABLE CAN BE JOINED ON ITSELF WITH PROPER TABLE ALIASING
-  
+  }  
   findAllEmployees() {
     return this.connection.promise().query(
-      "SELECT * FROM employee;"
+      "SELECT e.id as ID, concat(e.first_name,' ',e.last_name) AS Name, e.manager_id AS Manager, r.title AS Role, r.salary AS Salary, d.name AS Department FROM employee e INNER JOIN role r ON r.id=role_id INNER JOIN department d ON d.id=department_id;"
     );
   }
 

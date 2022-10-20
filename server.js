@@ -5,12 +5,9 @@ const fs = require('fs');
 const logo = require("asciiart-logo");
 require("console.table");
 
-
-// This file leads to a class we've created to contain all our database queries
+// Class to contain all our database queries
 // Does this need to be exported out from `./db/index`?
 const db = require("./db");
-const { allowedNodeEnvironmentFlags } = require('process');
-
 
 // Use this function to display the ascii art logo and to begin the main prompts
 function init() {
@@ -19,9 +16,7 @@ function init() {
   loadMainPrompts()
 }
 
-
-
-// Here we load the initial prompts with a series of options. The first option is provided for you.
+// Initial prompts with a series of options
 function loadMainPrompts() {
   prompt([
     {
@@ -53,10 +48,12 @@ function loadMainPrompts() {
           name: "Add an Employee",
           value: "ADD_EMPLOYEE"
         },
+        /*
         {
           name: "Update an Employee Role",
           value: "UPDATE_EMPLOYEE"
-        } 
+        }
+        */
       ]
     }
   ]).then(res => {
