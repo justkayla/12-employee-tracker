@@ -38,17 +38,23 @@ class DB {
       "INSERT INTO employee (name) VALUES (PROMPT RESPONSE);"
     )
   }
-
+  isManager() {
+    return this.connection.promise().query(
+      "QUERY"
+    )
   }
+  /*
+  updateEmployee() {
+    return this.connection.promise().query(
+      "QUERY"
+    )
+  }
+  */
 
   // Add more class methods below for all the database operations needed.
   // Sometimes you may need to pass an id value into a method so it knows 
   //   how to find the correct record.
 
-
-
-
-  
 }
 
 module.exports = new DB(connection);

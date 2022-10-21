@@ -128,7 +128,9 @@ function addDepartment() {
       name: "department"
     }
   ])
-  .then // INSERT input to db
+  // Where/how to make db connection here? Before or after .then block?
+  db.addDepartment()
+    .then // INSERT input to db / Call addDepartment()
 }
 function addRole() {
   prompt([
@@ -148,7 +150,7 @@ function addRole() {
       name: "department_id"
     }
   ])
-  .then // INSERT input to db
+  .then // INSERT input to db / Call addRole()
 }
 function addEmployee() {
   prompt([
@@ -174,7 +176,7 @@ function addEmployee() {
       value: "ADD_MANAGER"
     }
   ])
-  .then // INSERT input to db
+  .then // INSERT input to db / Call addEmployee()
   // Need an if/else statement here to handle manager?
 }
 function isManager() {
@@ -185,7 +187,7 @@ function isManager() {
       value: "manager_id"
     }
   ])
-  .then // INSERT input to db
+  .then // INSERT input to db / Call isManager()
 }
 /*
 function updateEmployee() {
