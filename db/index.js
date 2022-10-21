@@ -15,17 +15,17 @@ class DB {
     return this.connection.promise().query(
       "SELECT * FROM department;"
     );
-  }  
+  }
   findAllRoles() {
     return this.connection.promise().query(
       "SELECT * FROM role;"
     );
-  }  
+  }
   findAllEmployees() {
     return this.connection.promise().query(
       "SELECT e.id as ID, concat(e.first_name,' ',e.last_name) AS Name, e.manager_id AS Manager, r.title AS Role, r.salary AS Salary, d.name AS Department FROM employee e INNER JOIN role r ON r.id=role_id INNER JOIN department d ON d.id=department_id;"
     );
-  }  
+  }
   addDepartment(res) {
     return this.connection.promise().query(
       "INSERT INTO department (name) VALUES (?);", [res.department]
@@ -47,12 +47,12 @@ class DB {
       "QUERY"
     );
   }
-  */  
+  */
   updateEmployee(res) {
     return this.connection.promise().query(
-      "UPDATE employee SET role = (?) WHERE role_id = (?);", [res.role_id, res.employee]
+      "UPDATE employee SET title = (?) WHERE title = (?);", [res.employee, res.title, res.role_id]
     );
-  }  
+  }
 }
 
 module.exports = new DB(connection);

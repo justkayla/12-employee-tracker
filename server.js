@@ -46,11 +46,11 @@ function loadMainPrompts() {
         {
           name: "Add an Employee",
           value: "ADD_EMPLOYEE"
-        },        
+        },
         {
           name: "Update an Employee Role",
           value: "UPDATE_EMPLOYEE"
-        }        
+        }
       ]
     }
   ]).then(res => {
@@ -79,10 +79,10 @@ function loadMainPrompts() {
         case "ADD_MANAGER":
         isManager();
         break;
-      */     
+      */
       case "UPDATE_EMPLOYEE":
         updateEmployee();
-        break;      
+        break;
     }
   }
   )
@@ -242,16 +242,16 @@ function updateEmployee() {
           choices: roleList
         }
       ])
-      .then(db.updateEmployee)
-      .then(([rows]) => {
-        let employees = rows;
-        console.log("\n");
-        console.table(employees);
-        console.log("Employee updated successfully!");
-      })
-      .then(() => loadMainPrompts());
+        .then(db.updateEmployee)
+        .then(([rows]) => {
+          let employees = rows;
+          console.log("\n");
+          console.table(employees);
+          console.log("Employee updated successfully!");
+        })
+        .then(() => loadMainPrompts());
+    })
   })
-})
 }
 /* ======= END Controllers ============================================================ */
 
