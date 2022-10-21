@@ -49,16 +49,16 @@ THEN I am prompted to select an employee to update and their new role and this i
 https://github.com/justkayla/12-employee-tracker
 
 
+## Link to screencast
+
+https://app.castify.com/watch/f3c52397-aeda-4e62-a6e7-7b165efb2081 
+
+
 ## Screenshot
 
 Below is an in-process screenshot of my Employee Tracker.
 
-
-
-## Video
-
-Below is a video of the functioning application.
-
+![](screenshot1.png)
 
 
 ## Contributor
