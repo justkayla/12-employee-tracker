@@ -1,6 +1,6 @@
 // Base code provided by class instructor
 
-const { prompt, default: inquirer } = require('inquirer');
+const { prompt } = require('inquirer');
 const fs = require('fs');
 const logo = require("asciiart-logo");
 require("console.table");
@@ -11,6 +11,7 @@ const db = require("./db");
 
 // Use this function to display the ascii art logo and to begin the main prompts
 function init() {
+
 
 
   loadMainPrompts()
@@ -78,6 +79,9 @@ function loadMainPrompts() {
       case "ADD_EMPLOYEE":
         addEmployee();
         break;
+      case "ADD_MANAGER":
+        isManager();
+        break;        
       /*
       case "UPDATE_EMPLOYEE":
         updateEmployee();
@@ -120,28 +124,68 @@ function addDepartment() {
   prompt([
     {
       type: "input",
-      message: "What department would you like to add?",
-      name: "newDept"
+      message: "What is the name of the new department?",
+      name: "department"
     }
   ])
+  .then // INSERT input to db
 }
 function addRole() {
   prompt([
     {
       type: "input",
-      message: "What role would you like to add?",
-      name: "newRole"
+      message: "What is the title of the new role?",
+      name: "title"
+    },
+    {
+      type: "input",
+      message: "What is the salary of the new role?",
+      name: "salary"
+    },
+    {
+      type: "input",
+      message: "What is the department ID of the new role?",
+      name: "department_id"
     }
   ])
+  .then // INSERT input to db
 }
 function addEmployee() {
   prompt([
     {
       type: "input",
-      message: "What employee would you like to add?",
-      name: "newEmp"
+      message: "What is the first name of the new employee?",
+      name: "first_name"
+    },
+    {
+      type: "input",
+      message: "What is the last name of the new employee?",
+      value: "last_name"
+    },
+    {
+      type: "input",
+      message: "What is the role of the new employee?",
+      value: "role_id"
+    },
+    {
+      // If YES, connect to isManager()
+      type: "confirm",
+      message: "Is the employee a manager?",
+      value: "ADD_MANAGER"
     }
   ])
+  .then // INSERT input to db
+  // Need an if/else statement here to handle manager?
+}
+function isManager() {
+  prompt([
+    {
+      type: "input",
+      message: "What is the ID of the manager?",
+      value: "manager_id"
+    }
+  ])
+  .then // INSERT input to db
 }
 /*
 function updateEmployee() {
@@ -150,18 +194,6 @@ function updateEmployee() {
 }
 */
 /* ======= END Controllers ============================================================ */
-
-
-
-
-
-/* 
-  You will write lots of other functions here for the other prompt options.
-  Note that some prompts will require you to provide more prompts, and these 
-  may need functions of their own.
-*/
-
-
 
 // Everything starts here!
 init();
