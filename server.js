@@ -6,17 +6,15 @@ const logo = require("asciiart-logo");
 require("console.table");
 
 // Class to contain all our database queries
-// Does this need to be exported out from `./db/index`?
 const db = require("./db");
+const { findAllEmployees } = require('./db');
 
 // Use this function to display the ascii art logo and to begin the main prompts
 function init() {
 
 
-
   loadMainPrompts()
 }
-
 // Initial prompts with a series of options
 function loadMainPrompts() {
   prompt([
@@ -48,13 +46,11 @@ function loadMainPrompts() {
         {
           name: "Add an Employee",
           value: "ADD_EMPLOYEE"
-        },
-        /*
+        },        
         {
           name: "Update an Employee Role",
           value: "UPDATE_EMPLOYEE"
-        }
-        */
+        }        
       ]
     }
   ]).then(res => {
@@ -63,7 +59,7 @@ function loadMainPrompts() {
     switch (choice) {
       case "VIEW_DEPARTMENTS":
         viewDepartments();
-        break;      
+        break;
       case "VIEW_ROLES":
         viewRoles();
         break;
@@ -72,24 +68,25 @@ function loadMainPrompts() {
         break;
       case "ADD_DEPARTMENT":
         addDepartment();
-        break;      
+        break;
       case "ADD_ROLE":
         addRole();
-        break;      
+        break;
       case "ADD_EMPLOYEE":
         addEmployee();
         break;
-      case "ADD_MANAGER":
-        isManager();
-        break;        
       /*
+        case "ADD_MANAGER":
+        isManager();
+        break;
+      */     
       case "UPDATE_EMPLOYEE":
         updateEmployee();
-        break;
-      */      
+        break;      
     }
   }
-)}
+  )
+}
 /* ======= Controllers ============================================================ */
 function viewDepartments() {
   // Call the method in the db file for finding all departments
@@ -109,7 +106,7 @@ function viewRoles() {
       console.log("\n");
       console.table(roles);
     })
-  .then(() => loadMainPrompts());  
+    .then(() => loadMainPrompts());
 }
 function viewEmployees() {
   db.findAllEmployees()
@@ -128,9 +125,14 @@ function addDepartment() {
       name: "department"
     }
   ])
-  // Where/how to make db connection here? Before or after .then block?
-  db.addDepartment()
-    .then // INSERT input to db / Call addDepartment()
+    .then(db.addDepartment)
+    .then(([rows]) => {
+      let departments = rows;
+      console.log("\n");
+      console.table(departments);
+      console.log("Department added successfully!");
+    })
+    .then(() => loadMainPrompts());
 }
 function addRole() {
   prompt([
@@ -150,35 +152,61 @@ function addRole() {
       name: "department_id"
     }
   ])
-  .then // INSERT input to db / Call addRole()
+    .then(db.addRole)
+    .then(([rows]) => {
+      let roles = rows;
+      console.log("\n");
+      console.table(roles);
+      console.log("Role added successfully!");
+    })
+    .then(() => loadMainPrompts());
 }
 function addEmployee() {
-  prompt([
-    {
-      type: "input",
-      message: "What is the first name of the new employee?",
-      name: "first_name"
-    },
-    {
-      type: "input",
-      message: "What is the last name of the new employee?",
-      value: "last_name"
-    },
-    {
-      type: "input",
-      message: "What is the role of the new employee?",
-      value: "role_id"
-    },
-    {
-      // If YES, connect to isManager()
-      type: "confirm",
-      message: "Is the employee a manager?",
-      value: "ADD_MANAGER"
-    }
-  ])
-  .then // INSERT input to db / Call addEmployee()
-  // Need an if/else statement here to handle manager?
+  db.findAllRoles().then(([roles]) => {
+    let roleList = roles.map(role => {
+      return { name: role.title, value: role.id }
+    })
+    db.findAllEmployees().then(([employees]) => {
+      let employeeList = employees.map(employee => {
+        return { name: employee.Name, value: employee.ID }
+      })
+      employeeList.push({ name: "no manager", value: null })
+      prompt([
+        {
+          type: "input",
+          message: "What is the first name of the new employee?",
+          name: "first_name"
+        },
+        {
+          type: "input",
+          message: "What is the last name of the new employee?",
+          name: "last_name"
+        },
+        {
+          type: "list",
+          message: "What is the role of the new employee?",
+          name: "role_id",
+          choices: roleList
+        },
+        {
+          type: "list",
+          message: "Who is the employee's manager?",
+          name: "manager",
+          choices: employeeList
+        }
+      ])
+        .then(db.addEmployee)
+        .then(([rows]) => {
+          let employees = rows;
+          console.log("\n");
+          console.table(employees);
+          console.log("Employee added successfully!");
+        })
+        .then(() => loadMainPrompts());
+    })
+  })
 }
+/*
 function isManager() {
   prompt([
     {
@@ -187,14 +215,44 @@ function isManager() {
       value: "manager_id"
     }
   ])
-  .then // INSERT input to db / Call isManager()
-}
-/*
-function updateEmployee() {
-  // Which employee would you like to update? [choices]
-  // How would you like to update this employee? [choices]
+    .then // INSERT input to db / Call isManager()
 }
 */
+function updateEmployee() {
+  db.findAllRoles().then(([roles]) => {
+    let roleList = roles.map(role => {
+      return { name: role.title, value: role.id }
+    })
+    db.findAllEmployees().then(([employees]) => {
+      let employeeList = employees.map(employee => {
+        return { name: employee.Name, value: employee.ID }
+      })
+      employeeList.push({ name: "no manager", value: null })
+      prompt([
+        {
+          type: "list",
+          message: "Which employee would you like to update?",
+          name: "employee",
+          choices: employeeList
+        },
+        {
+          type: "list",
+          message: "What is the new role of the employee?",
+          name: "role_id",
+          choices: roleList
+        }
+      ])
+      .then(db.updateEmployee)
+      .then(([rows]) => {
+        let employees = rows;
+        console.log("\n");
+        console.table(employees);
+        console.log("Employee updated successfully!");
+      })
+      .then(() => loadMainPrompts());
+  })
+})
+}
 /* ======= END Controllers ============================================================ */
 
 // Everything starts here!

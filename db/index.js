@@ -5,7 +5,11 @@ const connection = require("../config/connection");
 class DB {
   // Reference to the connection on the class
   constructor(connection) {
-    this.connection = connection;   // Connect to db to perform query
+    this.connection = connection;
+    this.addDepartment = this.addDepartment.bind(this)
+    this.addRole = this.addRole.bind(this)
+    this.addEmployee = this.addEmployee.bind(this)
+    this.updateEmployee = this.updateEmployee.bind(this)
   }
   findAllDepartments() {
     return this.connection.promise().query(
@@ -21,40 +25,34 @@ class DB {
     return this.connection.promise().query(
       "SELECT e.id as ID, concat(e.first_name,' ',e.last_name) AS Name, e.manager_id AS Manager, r.title AS Role, r.salary AS Salary, d.name AS Department FROM employee e INNER JOIN role r ON r.id=role_id INNER JOIN department d ON d.id=department_id;"
     );
-  }
-  // How to add responses from prompts into queries?
-  addDepartment() {
+  }  
+  addDepartment(res) {
     return this.connection.promise().query(
-      "INSERT INTO department (name) VALUES (PROMPT RESPONSE);"
-    )
+      "INSERT INTO department (name) VALUES (?);", [res.department]
+    );
   }
-  addRole() {
+  addRole(res) {
     return this.connection.promise().query(
-      "INSERT INTO role (name) VALUES (PROMPT RESPONSE);"
-    )
+      "INSERT INTO role (title, salary, department_id) VALUES (?,?,?);", [res.title, res.salary, res.department_id]
+    );
   }
-  addEmployee() {
+  addEmployee(res) {
     return this.connection.promise().query(
-      "INSERT INTO employee (name) VALUES (PROMPT RESPONSE);"
-    )
+      "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?);", [res.first_name, res.last_name, res.role_id, res.manager]
+    );
   }
+  /*
   isManager() {
     return this.connection.promise().query(
       "QUERY"
-    )
+    );
   }
-  /*
-  updateEmployee() {
+  */  
+  updateEmployee(res) {
     return this.connection.promise().query(
-      "QUERY"
-    )
-  }
-  */
-
-  // Add more class methods below for all the database operations needed.
-  // Sometimes you may need to pass an id value into a method so it knows 
-  //   how to find the correct record.
-
+      "UPDATE employee SET role = (?) WHERE role_id = (?);", [res.role_id, res.employee]
+    );
+  }  
 }
 
 module.exports = new DB(connection);
