@@ -6,10 +6,12 @@ class DB {
   // Reference to the connection on the class
   constructor(connection) {
     this.connection = connection;
+    // When I pass `res` through these functions, it messes stuff up...temp solution: bind
     this.addDepartment = this.addDepartment.bind(this)
     this.addRole = this.addRole.bind(this)
     this.addEmployee = this.addEmployee.bind(this)
     this.updateEmployee = this.updateEmployee.bind(this)
+    this.deleteEmployee = this.deleteEmployee.bind(this)
   }
   findAllDepartments() {
     return this.connection.promise().query(
@@ -50,7 +52,15 @@ class DB {
   */
   updateEmployee(res) {
     return this.connection.promise().query(
-      "UPDATE employee SET title = (?) WHERE title = (?);", [res.employee, res.title, res.role_id]
+      // Why isn't this working? Doesn't throw error, but doesn't update role for selected employee
+      "SELECT id FROM employee WHERE id = (?);", [res.employee_id] + 
+      "UPDATE employee SET role_id = (?) WHERE employee (?);", [res.role_id, res.employee_id]
+    );
+  }
+  deleteEmployee(res){
+    return this.connection.promise().query(
+      // Why isn't this working? Doesn't throw error, but doesn't delete selected employee
+      "SELECT id FROM employee WHERE id = (?);", [res.employee_id] + "DELETE FROM employee WHERE id = (?);", [res.employee_id]
     );
   }
 }

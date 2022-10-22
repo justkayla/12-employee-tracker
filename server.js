@@ -3,16 +3,15 @@
 const { prompt } = require('inquirer');
 const fs = require('fs');
 const logo = require("asciiart-logo");
+const config = require("./package.json")
 require("console.table");
 
 // Class to contain all our database queries
 const db = require("./db");
-const { findAllEmployees } = require('./db');
 
-// Use this function to display the ascii art logo and to begin the main prompts
+// Display the ascii art logo and begin the main prompts
 function init() {
-
-
+  console.log(logo(config).render());
   loadMainPrompts()
 }
 // Initial prompts with a series of options
@@ -48,14 +47,18 @@ function loadMainPrompts() {
           value: "ADD_EMPLOYEE"
         },
         {
-          name: "Update an Employee Role",
+          name: "Update Employee Role",
           value: "UPDATE_EMPLOYEE"
+        },
+        {
+          name: "Delete Employee",
+          value: "DELETE_EMPLOYEE"
         }
       ]
     }
   ]).then(res => {
     let choice = res.choice;
-    // Call the appropriate function depending on what the user chose
+    // Call the appropriate function depending on user choice
     switch (choice) {
       case "VIEW_DEPARTMENTS":
         viewDepartments();
@@ -82,6 +85,9 @@ function loadMainPrompts() {
       */
       case "UPDATE_EMPLOYEE":
         updateEmployee();
+        break;
+      case "DELETE_EMPLOYEE":
+        deleteEmployee();
         break;
     }
   }
@@ -251,6 +257,29 @@ function updateEmployee() {
         })
         .then(() => loadMainPrompts());
     })
+  })
+}
+function deleteEmployee() {
+  db.findAllEmployees().then(([employees]) => {
+    let employeeList = employees.map(employee => {
+      return { name: employee.Name, value: employee.ID }
+    })
+    prompt([
+      {
+        type: "list",
+        message: "Which employee would you like to delete?",
+        name: "employee",
+        choices: employeeList
+      },
+    ])
+      .then(db.deleteEmployee)
+      .then(([rows]) => {
+        let employees = rows;
+        console.log("\n");
+        console.table(employees);
+        console.log("Employee deleted successfully!");
+      })
+      .then(() => loadMainPrompts());
   })
 }
 /* ======= END Controllers ============================================================ */
