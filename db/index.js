@@ -53,14 +53,13 @@ class DB {
   updateEmployee(res) {
     return this.connection.promise().query(
       // Why isn't this working? Doesn't throw error, but doesn't update role for selected employee
-      "SELECT id FROM employee WHERE id (?);", [res.employee_id] + 
-      "UPDATE employee SET role_id (?) WHERE employee (?);", [res.role_id, res.employee_id]
+      "UPDATE employee SET role_id = ? WHERE id = ?;", [res.role_id, res.employee]
     );
   }
-  deleteEmployee(res){
+  deleteEmployee(res) {
     return this.connection.promise().query(
       // Why isn't this working? Doesn't throw error, but doesn't delete selected employee
-      "SELECT id FROM employee WHERE id (?);", [res.employee_id] + "DELETE FROM employee WHERE id (?);", [res.employee_id]
+      "DELETE FROM employee WHERE id = ?;", [res.employee]
     );
   }
 }
