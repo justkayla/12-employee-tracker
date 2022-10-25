@@ -141,31 +141,36 @@ function addDepartment() {
     .then(() => loadMainPrompts());
 }
 function addRole() {
-  prompt([
-    {
-      type: "input",
-      message: "What is the title of the new role?",
-      name: "title"
-    },
-    {
-      type: "input",
-      message: "What is the salary of the new role?",
-      name: "salary"
-    },
-    {
-      type: "input",
-      message: "What is the department ID of the new role?",
-      name: "department_id"
-    }
-  ])
-    .then(db.addRole)
-    .then(([rows]) => {
-      let roles = rows;
-      console.log("\n");
-      console.table(roles);
-      console.log("Role added successfully!");
+  db.findAllDepartments().then(([departments]) => {
+    let departmentList = departments.map(department => {
+      return { name: department.name, value: department.id }
     })
-    .then(() => loadMainPrompts());
+    prompt([
+      {
+        type: "input",
+        message: "What is the title of the new role?",
+        name: "title"
+      },
+      {
+        type: "input",
+        message: "What is the salary of the new role?",
+        name: "salary"
+      },
+      {
+        type: "input",
+        message: "What is the department ID of the new role?",
+        name: "department_id"
+      }
+    ])
+      .then(db.addRole)
+      .then(([rows]) => {
+        let roles = rows;
+        console.log("\n");
+        console.table(roles);
+        console.log("Role added successfully!");
+      })
+      .then(() => loadMainPrompts());
+  })
 }
 function addEmployee() {
   db.findAllRoles().then(([roles]) => {
