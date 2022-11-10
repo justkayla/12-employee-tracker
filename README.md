@@ -63,4 +63,4 @@ Below is an in-process screenshot of my Employee Tracker.
 
 ## Contributor
 
-Kayla Justice &copy;2022   
+Kayla Justice 2022   
